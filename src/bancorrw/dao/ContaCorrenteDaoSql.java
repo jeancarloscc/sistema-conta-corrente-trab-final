@@ -23,7 +23,11 @@ public class ContaCorrenteDaoSql implements ContaCorrenteDao{
     }
     private static ContaCorrenteDaoSql dao;
     public static ContaCorrenteDaoSql getContaCorrenteDaoSql(){
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        if (dao == null) {
+            return dao = new ContaCorrenteDaoSql();
+        }else {
+            return dao;
+        }
     } 
     private String insertContaCorrente = 
         "INSERT INTO " +
@@ -144,12 +148,34 @@ public class ContaCorrenteDaoSql implements ContaCorrenteDao{
     private final String ressetAIContas = "ALTER TABLE contas AUTO_INCREMENT =1";
     @Override
     public void add(ContaCorrente contaCorrente) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        try (Connection connection = ConnectionFactory.getConnection();
+        PreparedStatement stmtAdiciona = connection.prepareStatement(insertContaCorrente, Statement.RETURN_GENERATED_KEYS);) {
+            stmtAdiciona.setString(1, contaCorrente.getCliente().getNome());
+            stmtAdiciona.setDouble(2, contaCorrente.getSaldo());
+            stmtAdiciona.setDouble(3, contaCorrente.getLimite());
+
+            stmtAdiciona.execute();
+
+            ResultSet rs = stmtAdiciona.getGeneratedKeys();
+            rs.next();
+            long id = rs.getLong(1);
+            contaCorrente.setId(id);
+        }
     }
 
     @Override
     public List<ContaCorrente> getAll() throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");    
+        try (Connection connection = ConnectionFactory.getConnection();
+        PreparedStatement stmtLista = connection.prepareStatement(selectAll);
+        ResultSet rs = stmtLista.executeQuery();) {
+            List<ContaCorrente> contaCorrentes = new ArrayList<>();
+            while (rs.next()) {
+                long id = rs.getLong("contas_corrente.id_conta");
+                String nome = rs.getString("contas_corrente.nome");
+
+
+            }
+        }
     }
 
     @Override

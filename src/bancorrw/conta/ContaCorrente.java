@@ -6,19 +6,15 @@ package bancorrw.conta;
 
 import bancorrw.cliente.Cliente;
 
-/**
- *
- * @author rafae
- */
 public class ContaCorrente extends Conta{
 
     private double limite;
-    private double taxaJuros;
+    private double taxaJurosLimite;
 
-    public ContaCorrente(long id, Cliente cliente, double saldo, double limite, double taxaJuros) {
+    public ContaCorrente(double limite, double taxaJurosLimite, long id, Cliente cliente, double saldo) {
         super(id, cliente, saldo);
         this.limite = limite;
-        this.taxaJuros = taxaJuros;
+        this.taxaJurosLimite = taxaJurosLimite;
     }
 
     public double getLimite() {
@@ -29,19 +25,21 @@ public class ContaCorrente extends Conta{
         this.limite = limite;
     }
 
-    public double getTaxaJuros() {
-        return taxaJuros;
+    public double getTaxaJurosLimite() {
+        return taxaJurosLimite;
     }
 
-    public void setTaxaJuros(double taxaJuros) {
-        this.taxaJuros = taxaJuros;
+    public void setTaxaJurosLimite(double taxaJuros) {
+        this.taxaJurosLimite = taxaJuros;
     }
 
-    public void aplicarJuros(){
-
+    public void aplicaJuros(){
+        if (getSaldo() < 0){
+            double juros = getSaldo() * taxaJurosLimite;
+        }
     }
 
-    public void sacar(double valor){
-        
+    public void saca(double valor){
+
     }
 }

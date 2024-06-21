@@ -50,7 +50,7 @@ public class Cliente extends Pessoa{
     }
 
     public double getSaldoTotalCliente(){
-        return;
+        return 0;
     }
 
     

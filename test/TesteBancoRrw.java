@@ -1,3 +1,8 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit4TestClass.java to edit this template
+ */
+
 import bancorrw.cliente.Cliente;
 import bancorrw.conta.ContaCorrente;
 import bancorrw.conta.ContaInvestimento;
@@ -6,48 +11,53 @@ import bancorrw.dao.ContaCorrenteDao;
 import bancorrw.dao.ContaInvestimentoDao;
 import bancorrw.dao.DaoFactory;
 import bancorrw.dao.DaoType;
-import org.junit.jupiter.api.Test;
-
 import java.lang.reflect.Modifier;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
 
 /**
  *
  * @author rafae
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TesteBancoRrw{
     private ClienteDao cliDao;
     private ContaCorrenteDao corDao;
     private ContaInvestimentoDao invDao;
-    
+
     public TesteBancoRrw() {
         /*cliDao = DaoFactory.getClienteDao(DaoType.SQL);
         corDao = DaoFactory.getContaCorrenteDao(DaoType.SQL);
         invDao = DaoFactory.getContaInvestimentoDao(DaoType.SQL);*/
     }
-    
-//    @BeforeClass
-//    public static void setUpClass() {
-//    }
-//
-//    @AfterClass
-//    public static void tearDownClass() {
-//    }
-//
-//    @Before
-//    public void setUp() throws Exception {
-//        //exlcui todos os registros do BD
-//        //cliDao.deleteAll();
-//    }
-//
-//    @After
-//    public void tearDown() {
-//    }
+
+    @BeforeClass
+    public static void setUpClass() {
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        //exlcui todos os registros do BD
+        //cliDao.deleteAll();
+    }
+
+    @After
+    public void tearDown() {
+    }
     private void inicializaBD() throws Exception{
         if(cliDao==null){
             cliDao = DaoFactory.getClienteDao(DaoType.SQL);
@@ -81,9 +91,9 @@ public class TesteBancoRrw{
         assertEquals("Use o modificador private para o atributo dataNacimento da classe Pessoa.",true,Modifier.isPrivate(c.getDeclaredFields()[3].getModifiers()));
         //Verifica se classe pessoa tem 8 métodos deve ter a classe pessoa.
         assertEquals("A classe pessoa deve ter 8 métodos. Olhe na especificação.",8,c.getDeclaredMethods().length);
-        
+
     }
-    
+
     @Test
     public void t02verificaEstruturaClasseContaCorrente() throws ClassNotFoundException {
         Class c = Class.forName("bancorrw.conta.ContaCorrente");
@@ -132,7 +142,7 @@ public class TesteBancoRrw{
         assertEquals("ContaInvestimento: Use o modificador private para o atributo montanteMinimo.",true,Modifier.isPrivate(c.getDeclaredFields()[1].getModifiers()));
         assertEquals("ContaInvestimento: Use o modificador private para o atributo depositoMinimo.",true,Modifier.isPrivate(c.getDeclaredFields()[2].getModifiers()));
     }
-    
+
     @Test
     public void t04criarContaCorrenteSaldoZero() throws Exception{
         Cliente cliente = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
@@ -140,7 +150,7 @@ public class TesteBancoRrw{
         double saldo = c.getSaldo();
         assertEquals("Era esperado um saldo zerado para conta criada.",0.0, saldo,0.0);
     }
-    
+
     @Test
     public void t05criaContaCorrenteComSaldo2000() throws Exception {
         Cliente cliente = new Cliente(-1,  "Rafael", "333", LocalDate.of(2000, Month.MARCH, 1),"111");
@@ -148,7 +158,7 @@ public class TesteBancoRrw{
         assertEquals(conta,cliente.getContaCorrente());
         assertEquals(cliente.getContaCorrente().getSaldo(),2000.0,0.0);
     }
-    
+
     @Test
     public void t06manipulaContaCorrenteDepositar50() throws Exception {
         Cliente cliente = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
@@ -157,7 +167,7 @@ public class TesteBancoRrw{
         double saldo = c.getSaldo();
         assertEquals(50.0, saldo,0.0);
     }
-    
+
     @Test
     public void t07manipulaContaCorrenteDepositar100Deposita20Saca60() throws Exception {
         Cliente cliente = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
@@ -169,7 +179,7 @@ public class TesteBancoRrw{
         c.saca(80);
         assertEquals(40.0, c.getSaldo(),0.0);
     }
-    
+
     @Test
     public void t08manipulaContaCorrenteDepositar100Deposita20Saca1000() throws Exception {
         Cliente cliente = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
@@ -198,28 +208,28 @@ public class TesteBancoRrw{
         }catch(Exception ex){
             //Verifica a mensagem da exceção
             assertEquals("Verifique a mensagem da exceção: ",
-                            "Saldo insuficiente na conta."+
+                    "Saldo insuficiente na conta."+
                             "\nValor saque=1300.0"+
                             "\nSaldo="+c.getSaldo()+
                             "\nLimite="+c.getLimite(),
-                            ex.getMessage());
+                    ex.getMessage());
         }
         //Verifica se a conta continua com 120
         assertEquals(120.0, c.getSaldo(),0.0);
     }
-    
+
     @Test
     public void t10manipulaContaCorrenteDepositarNegativo50() throws Exception {
         Cliente cliente = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
         ContaCorrente c = new ContaCorrente(1000,0.05,-1, cliente, 0);
-        
+
         //Depósito de valor negativo causa exceção. O teste é para ver se a exceção é lançada nesse caso. Se a exceção for lançada com a mensagem correta, o teste fica verde.
         try{
             c.deposita(-50);
             fail("Deveria ter levantado uma exceção, pois valor negativo para o depósito não é válido.");
         }catch(Exception ex){
             //Verifica a mensagem da exceção
-            assertEquals("Valor do depósito não pode ser negativo ou zero. Valor=-50.0",ex.getMessage());            
+            assertEquals("Valor do depósito não pode ser negativo ou zero. Valor=-50.0",ex.getMessage());
         }
         //Verifica se a conta continua com 0
         assertEquals(0.0, c.getSaldo(),0.0);
@@ -228,19 +238,19 @@ public class TesteBancoRrw{
     public void t11manipulaContaCorrenteSaqueNegativo100() throws Exception {
         Cliente cliente = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
         ContaCorrente c = new ContaCorrente(1000,0.05,-1, cliente, 0);
-        
+
         //Depósito de valor negativo causa exceção. O teste é para ver se a exceção é lançada nesse caso. Se a exceção for lançada com a mensagem correta, o teste fica verde.
         try{
             c.saca(-100);
             fail("Deveria ter levantado uma exceção, pois valor negativo para o depósito não é válido.");
         }catch(Exception ex){
             //Verifica a mensagem da exceção
-            assertEquals("Valor do saque não pode ser negativo ou zero. Valor=-100.0",ex.getMessage());            
+            assertEquals("Valor do saque não pode ser negativo ou zero. Valor=-100.0",ex.getMessage());
         }
         //Verifica se a conta continua com 0
         assertEquals(0.0, c.getSaldo(),0.0);
     }
-    
+
     @Test
     public void t12manipulaContaCorrenteDeposita100AplicaJuros() throws Exception {
         Cliente cliente = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
@@ -249,9 +259,9 @@ public class TesteBancoRrw{
         c.aplicaJuros();
         //Valor do saldo continua o mesmo, pois o saldo era igual ou superior a zero (100)
         assertEquals(100.0, c.getSaldo(),0.0);
-        
+
     }
-    
+
     @Test
     public void t13manipulaContaCorrenteSaca100AplicaJuros() throws Exception {
         Cliente cliente = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
@@ -260,9 +270,9 @@ public class TesteBancoRrw{
         c.aplicaJuros();
         //Nesse caso a conta está 100 negativa (usando o limite). Então aplicaremos o juros indicado no construtor (5%).
         assertEquals(-105.0, c.getSaldo(),0.0);
-        
+
     }
-    
+
     @Test
     public void t14trocaContaCorrenteDeCliente() throws Exception {
         Cliente cliente = new Cliente(-1,  "Rafael", "333", LocalDate.of(2000, Month.MARCH, 1),"111");
@@ -272,7 +282,7 @@ public class TesteBancoRrw{
         assertEquals(conta2,cliente.getContaCorrente());
         assertEquals(cliente.getContaCorrente().getSaldo(),1500.0,0.0);
     }
-    
+
     @Test
     public void t15verificaSaldoZeroParaTrocarContaCorrente() throws Exception {
         Cliente cliente = new Cliente(-1,  "Rafael", "333", LocalDate.of(2000, Month.MARCH, 1),"111");
@@ -285,14 +295,14 @@ public class TesteBancoRrw{
                     + "Para fazer isso primeiro zere o saldo da conta do cliente. Saldo=2000.0",ex.getMessage());
         }
     }
-    
+
     @Test
     public void t16criarContaInvestimento() throws Exception{
         ContaInvestimento c = new ContaInvestimento(0.02,1000,100,1000,-1, new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111"));
         double saldo = c.getSaldo();
         assertEquals("Era esperado um saldo de 1000 para conta criada.",1000.0, saldo,0.0);
     }
-    
+
     @Test
     public void t17manipularContaInvestimentoDepositoInicialMenorQueMontanteMinimo() throws Exception{
         try{
@@ -301,10 +311,10 @@ public class TesteBancoRrw{
         }catch(Exception ex){
             assertEquals("Saldo não pode ser menor que montante mínimo.",ex.getMessage());
         }
-    
-    
+
+
     }
-    
+
     @Test
     public void t18manipularContaInvestimentoDepositarMinimo() throws Exception {
         ContaInvestimento c = new ContaInvestimento(0.02,1000,100,1000,-1, new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111"));
@@ -312,7 +322,7 @@ public class TesteBancoRrw{
         double saldo = c.getSaldo();
         assertEquals(1100.0, saldo,0.0);
     }
-    
+
     @Test
     public void t19manipularContaInvestimentoDepositar1000Sacar500() throws Exception {
         ContaInvestimento c = new ContaInvestimento(0.02,1000,100,1000,-1, new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111"));
@@ -323,7 +333,7 @@ public class TesteBancoRrw{
         c.saca(200);
         assertEquals(1300.0, c.getSaldo(),0.0);
     }
-    
+
     @Test
     public void t20manipularContaInvestimentoDepositar1000Sacar1100() throws Exception {
         ContaInvestimento c = new ContaInvestimento(0.02,1000,100,1000,-1, new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111"));
@@ -350,8 +360,8 @@ public class TesteBancoRrw{
         assertEquals(1000.0, c.getSaldo(),0.0);
 
     }
- 
-    
+
+
     @Test
     public void t22manipularContaInvestimentoAplica1000AplicaJuros() throws Exception {
         ContaInvestimento c = new ContaInvestimento(0.02,1000,100,1000,-1, new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111"));
@@ -359,18 +369,18 @@ public class TesteBancoRrw{
         c.aplicaJuros();
         //Nesse caso a conta está 100 negativa (usando o limite). Então aplicaremos o juros indicado no construtor (5%).
         assertEquals(2040.0, c.getSaldo(),0.0);
-        
-    }    
-    
-     @Test
+
+    }
+
+    @Test
     public void t23crudClienteAdd() throws Exception {
         inicializaBD();
         //Adiciona cliente no BD
         Cliente c1 = new Cliente(-1,  "Rafael", "333", LocalDate.of(2000, Month.MARCH, 1),"111");
         cliDao.add(c1);
         //Verifica se o id gerado é 1. (Primeiro do BD)
-        assertEquals("Quando inserir o cliente no BD, recupere o ID gerado e sete no objeto do cliente.",1, c1.getId());  
-     }   
+        assertEquals("Quando inserir o cliente no BD, recupere o ID gerado e sete no objeto do cliente.",1, c1.getId());
+    }
 
     @Test
     public void t24crudClienteGetById() throws Exception {
@@ -383,7 +393,7 @@ public class TesteBancoRrw{
         assertEquals("Rafael", c2.getNome());
         assertEquals("333", c2.getCpf());
         assertEquals(LocalDate.of(2000, Month.MARCH, 1),c2.getDataNascimento());
-     }
+    }
 
     @Test
     public void t25crudClienteUpdate() throws Exception {
@@ -396,8 +406,8 @@ public class TesteBancoRrw{
         cliDao.update(c1);
         Cliente c2 = cliDao.getById(c1.getId());
         assertEquals("777", c2.getCartaoCredito());
-     }
-    
+    }
+
     @Test
     public void t26crudClienteDelete() throws Exception {
         inicializaBD();
@@ -405,14 +415,14 @@ public class TesteBancoRrw{
         Cliente c1 = new Cliente(-1,  "Rafael", "333", LocalDate.of(2000, Month.MARCH, 1),"111");
         cliDao.add(c1);
         //Verifica se temos um cliente no total
-        assertEquals(1,cliDao.getAll().size()); 
+        assertEquals(1,cliDao.getAll().size());
         //Exclui cliente
         cliDao.delete(c1);
         //Depois de exlcuir verifica se temos 0 clientes no total
-        assertEquals(0,cliDao.getAll().size());   
+        assertEquals(0,cliDao.getAll().size());
         //Verifica se o objeto Cliente ficou com id=-1 (Isso indica que não está no BD)
-        assertEquals(-1,c1.getId());  
-     }
+        assertEquals(-1,c1.getId());
+    }
 
     @Test
     public void t27crudContaCorrenteAdd() throws Exception {
@@ -448,8 +458,8 @@ public class TesteBancoRrw{
         assertEquals(300.0, conta2.getSaldo(),0.0);
         assertEquals(1000.0, conta2.getLimite(),0.0);
         assertEquals(0.05, conta2.getTaxaJurosLimite(),0.0);
-        assertEquals(1, conta2.getId());   
-     }
+        assertEquals(1, conta2.getId());
+    }
     @Test
     public void t29crudContaCorrenteUpdate() throws Exception {
         inicializaBD();
@@ -469,8 +479,8 @@ public class TesteBancoRrw{
         ContaCorrente conta2 = corDao.getById(conta.getId());
         assertEquals(700, conta2.getSaldo(),0.0);
         assertEquals(1500, conta2.getLimite(),0.0);
-        assertEquals(0.06, conta2.getTaxaJurosLimite(),0.0); 
-     }    
+        assertEquals(0.06, conta2.getTaxaJurosLimite(),0.0);
+    }
     @Test
     public void t30crudContaCorrenteDelete() throws Exception {
         inicializaBD();
@@ -484,14 +494,14 @@ public class TesteBancoRrw{
         //Exclui cliente
         corDao.delete(conta);
         //Verifoca se a quantidade de contas correntes é zero.
-        assertEquals(0,corDao.getAll().size());  
+        assertEquals(0,corDao.getAll().size());
         //Verifica se a Conta Corrente ficou com id=-1 (Isso indica que não está no BD)
-        assertEquals(-1,conta.getId());  
-        
-        
-     }
+        assertEquals(-1,conta.getId());
 
-        @Test
+
+    }
+
+    @Test
     public void t31crudContaInvestimentoAdd() throws Exception {
         inicializaBD();
         //Adiciona conta no BD
@@ -503,12 +513,12 @@ public class TesteBancoRrw{
         cliDao.add(cliente);
         invDao.add(conta1);
         invDao.add(conta2);
-        
+
         //Verifica se o número da conta=1 e 2. (Primeiros do BD)
         assertEquals("No momento da dao adicionar a conta investimento no BD obtenha o número gerado pelo BD do ID e sete o id do objeto.",1, conta1.getNumero());
         assertEquals("No momento da dao adicionar a conta investimento no BD obtenha o número gerado pelo BD do ID e sete o id do objeto.",2, conta2.getNumero());
 
-     }    
+    }
 
     @Test
     public void t32crudContaInvestimentoGetById() throws Exception {
@@ -526,7 +536,7 @@ public class TesteBancoRrw{
         //Recupera conta do BD por id
         ContaInvestimento conta1BD = invDao.getById(conta1.getId());
         ContaInvestimento conta2BD = invDao.getById(conta2.getId());
-       
+
         //Verifica os atributos da conta 1
         assertEquals(1, conta1BD.getNumero());
         assertEquals("Marcelo", conta1BD.getCliente().getNome());
@@ -551,11 +561,11 @@ public class TesteBancoRrw{
         assertEquals(2000.0, conta2BD.getMontanteMinimo(),0.0);
         assertEquals(0.01, conta2BD.getTaxaRemuneracaoInvestimento(),0.0);
         assertEquals(2, conta2BD.getId());
-        
-   
-     }     
-    
-        @Test
+
+
+    }
+
+    @Test
     public void t33crudContaInvestimentoUpdate() throws Exception {
         inicializaBD();
         //Adiciona conta no BD
@@ -568,7 +578,7 @@ public class TesteBancoRrw{
         invDao.add(conta1);
         invDao.add(conta2);
 
-        
+
 
         //Atualiza conta (saldo)
         conta1.saca(500);
@@ -580,9 +590,9 @@ public class TesteBancoRrw{
         ContaInvestimento conta1BD = invDao.getById(conta1.getId());
         assertEquals(1200, conta1BD.getSaldo(),0.0);
         assertEquals(200, conta1BD.getDepositoMinimo(),0.0);
-        assertEquals(700, conta1BD.getMontanteMinimo(),0.0); 
-     }  
-    
+        assertEquals(700, conta1BD.getMontanteMinimo(),0.0);
+    }
+
     @Test
     public void t34crudContaInvestimentoDelete() throws Exception {
         inicializaBD();
@@ -595,16 +605,16 @@ public class TesteBancoRrw{
         cliDao.add(cliente);
         invDao.add(conta1);
         invDao.add(conta2);
-        
- 
+
+
         //Exclui cota
         //Verifica se tem 2 na lista antes de exluir
-        assertEquals(2,invDao.getAll().size());    
+        assertEquals(2,invDao.getAll().size());
         invDao.delete(conta1);
         //Verifica se tem depois de excluir uma conta.
-        assertEquals(1,invDao.getAll().size());    
-     }    
-    
+        assertEquals(1,invDao.getAll().size());
+    }
+
     @Test
     public void t35verificaSeAContaCorrenteFoiSetadaNoCliente() throws Exception {
         inicializaBD();
@@ -619,7 +629,7 @@ public class TesteBancoRrw{
         //A conta do cliente deve ter o mesmo ID da conta que foi criada
         assertEquals("A conta do cliente deve ter o mesmo identificador da conta que foi craida. ", c.getId(),c3.getId());
         assertEquals("A conta do cliente deve ter o mesmo identificador da conta que foi craida. ", c2.getId(),c3.getId());
-        
+
     }
     @Test
     public void t36manipulaSaldoDaContaCorrenteEGravaBdERecuperaSaldo() throws Exception {
@@ -639,36 +649,36 @@ public class TesteBancoRrw{
         assertEquals("A conta do cliente deve ter o mesmo identificador da conta que foi craida. ", c.getId(),c2.getId());
         //Verifica se o slado de c2 é 2000
         assertEquals(2000.0,c2.getSaldo(),0.0);
-        
+
     }
     @Test
     public void t37cria4ContasSalvaNoBDeRecuperaTodas() throws Exception {
         inicializaBD();
         //1
         Cliente cl1 = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
-        ContaCorrente co1 = new ContaCorrente(1000,0.05,-1, cl1, 300);   
+        ContaCorrente co1 = new ContaCorrente(1000,0.05,-1, cl1, 300);
         //2
         Cliente cl2 = new Cliente(-1,"Rodrigo","0884",LocalDate.of(1996,4,3),"112");
-        ContaCorrente co2 = new ContaCorrente(500,0.04,-1, cl2, 200);          
+        ContaCorrente co2 = new ContaCorrente(500,0.04,-1, cl2, 200);
         //3
         Cliente cl3 = new Cliente(-1,"Maria","081",LocalDate.of(1997,1,13),"113");
-        ContaCorrente co3 = new ContaCorrente(1500,0.03,-1, cl3, 300);  
+        ContaCorrente co3 = new ContaCorrente(1500,0.03,-1, cl3, 300);
         //4
         Cliente cl4 = new Cliente(-1,"Viviane","089",LocalDate.of(1998,3,23),"114");
         ContaCorrente co4 = new ContaCorrente(3000,0.02,-1, cl4, 400);
-        
+
         //Grava clientes no BD
         cliDao.add(cl1);
         cliDao.add(cl2);
         cliDao.add(cl3);
         cliDao.add(cl4);
-        
+
         //Grava contas no BD
         corDao.add(co1);
         corDao.add(co2);
         corDao.add(co3);
         corDao.add(co4);
-        
+
         //Recupera todas do BD
         List<ContaCorrente> lista = corDao.getAll();
         //Verifica se temos 4 contas recuperadas
@@ -686,43 +696,43 @@ public class TesteBancoRrw{
         inicializaBD();
         //1
         Cliente cl1 = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
-        ContaCorrente co1 = new ContaCorrente(1000,0.05,-1, cl1, 300);   
+        ContaCorrente co1 = new ContaCorrente(1000,0.05,-1, cl1, 300);
         //2
         Cliente cl2 = new Cliente(-1,"Rodrigo","0884",LocalDate.of(1996,4,3),"112");
-        ContaCorrente co2 = new ContaCorrente(500,0.04,-1, cl2, 200);          
+        ContaCorrente co2 = new ContaCorrente(500,0.04,-1, cl2, 200);
         //3
         Cliente cl3 = new Cliente(-1,"Maria","081",LocalDate.of(1997,1,13),"113");
-        ContaCorrente co3 = new ContaCorrente(1500,0.03,-1, cl3, 300);  
+        ContaCorrente co3 = new ContaCorrente(1500,0.03,-1, cl3, 300);
         //4
         Cliente cl4 = new Cliente(-1,"Viviane","089",LocalDate.of(1998,3,23),"114");
         ContaCorrente co4 = new ContaCorrente(3000,0.02,-1, cl4, 400);
-        
+
         //Grava clientes no BD
         cliDao.add(cl1);
         cliDao.add(cl2);
         cliDao.add(cl3);
         cliDao.add(cl4);
-        
+
         //Grava contas no BD
         corDao.add(co1);
         corDao.add(co2);
         corDao.add(co3);
         corDao.add(co4);
-        
+
         //Recupera todas do BD
         List<ContaCorrente> lista = corDao.getAll();
         //Verifica se temos 4 contas recuperadas
         assertEquals(4, lista.size());
-        
+
         //Testa o deleteAll
         corDao.deleteAll();
         //Recupera todas do BD
         List<ContaCorrente> lista2 = corDao.getAll();
         //Verifica se temos 0 contas recuperadas
-        assertEquals(0, lista2.size());  
-        
+        assertEquals(0, lista2.size());
+
     }
-  
+
     @Test
     public void t39verificaSeAContaInvestimentoFoiSetadaNoCliente() throws Exception {
         inicializaBD();
@@ -736,7 +746,7 @@ public class TesteBancoRrw{
         assertEquals("A conta do cliente deve ter a mesma referência da conta que foi criada. "
                 + "Na última linha do construtor da ContaCorrente sete a referência da ContaCorrente no cliente.", contaInv1,contaInv11);
 
-        
+
         cliDao.add(cliente);
         invDao.add(contaInv1);
         invDao.add(contaInv2);
@@ -749,73 +759,73 @@ public class TesteBancoRrw{
         assertEquals(2, cliente.getContasInvestimento().size());
         //Verifica se a soma dos saldos bate
         assertEquals(6000.0, cliente.getSaldoTotalCliente(),0.0);
-        
-        
+
+
         Cliente clienteBD = cliDao.getById(cliente.getId());
         List<ContaInvestimento> lista = clienteBD.getContasInvestimento();
-        
-        
+
+
     }
-    
+
     @Test
     public void t40testaContaInvestimentoDeleteAll() throws Exception {
         inicializaBD();
         //1
         Cliente cl1 = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
-        ContaInvestimento ci1 = new ContaInvestimento(0.05,1000,500,1000,-1, cl1);   
+        ContaInvestimento ci1 = new ContaInvestimento(0.05,1000,500,1000,-1, cl1);
         //2
-        ContaInvestimento ci2 = new ContaInvestimento(0.06,2000,600,2000,-1, cl1);            
+        ContaInvestimento ci2 = new ContaInvestimento(0.06,2000,600,2000,-1, cl1);
         //3
-        ContaInvestimento ci3 = new ContaInvestimento(0.07,3000,700,3000,-1, cl1);     
+        ContaInvestimento ci3 = new ContaInvestimento(0.07,3000,700,3000,-1, cl1);
         //4
-        ContaInvestimento ci4 = new ContaInvestimento(0.08,4000,800,4000,-1, cl1);   
-        
+        ContaInvestimento ci4 = new ContaInvestimento(0.08,4000,800,4000,-1, cl1);
+
         //Grava clientes no BD
         cliDao.add(cl1);
-        
+
         //Grava contas no BD
         invDao.add(ci1);
         invDao.add(ci2);
         invDao.add(ci3);
         invDao.add(ci4);
-        
+
         //Recupera todas do BD
         List<ContaInvestimento> lista = invDao.getAll();
         //Verifica se temos 4 contas recuperadas
         assertEquals(4, lista.size());
-        
+
         //Testa o deleteAll
         invDao.deleteAll();
         //Recupera todas do BD
         List<ContaInvestimento> lista2 = invDao.getAll();
         //Verifica se temos 0 contas recuperadas
-        assertEquals(0, lista2.size());  
-        
+        assertEquals(0, lista2.size());
+
     }
-    
+
     @Test
     public void t41testaSeODeleteAllDaContaCorrenteNaoEliminaTodasAsContasInvestiemntosDoCliente() throws Exception {
         inicializaBD();
         //Cria 4 contas correntes (uma para cada cliente)
         //1
         Cliente cl1 = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
-        ContaCorrente co1 = new ContaCorrente(1000,0.05,-1, cl1, 300);   
+        ContaCorrente co1 = new ContaCorrente(1000,0.05,-1, cl1, 300);
         //2
         Cliente cl2 = new Cliente(-1,"Rodrigo","0884",LocalDate.of(1996,4,3),"112");
-        ContaCorrente co2 = new ContaCorrente(500,0.04,-1, cl2, 200);          
+        ContaCorrente co2 = new ContaCorrente(500,0.04,-1, cl2, 200);
         //3
         Cliente cl3 = new Cliente(-1,"Maria","081",LocalDate.of(1997,1,13),"113");
-        ContaCorrente co3 = new ContaCorrente(1500,0.03,-1, cl3, 300);  
+        ContaCorrente co3 = new ContaCorrente(1500,0.03,-1, cl3, 300);
         //4
         Cliente cl4 = new Cliente(-1,"Viviane","089",LocalDate.of(1998,3,23),"114");
         ContaCorrente co4 = new ContaCorrente(3000,0.02,-1, cl4, 400);
-        
+
         //Grava clientes no BD
         cliDao.add(cl1);
         cliDao.add(cl2);
         cliDao.add(cl3);
         cliDao.add(cl4);
-        
+
         //Grava contas no BD
         corDao.add(co1);
         corDao.add(co2);
@@ -824,20 +834,20 @@ public class TesteBancoRrw{
 
 
         //Cria  4 Contas Investimento para o primeiro cliente.
-        ContaInvestimento ci1 = new ContaInvestimento(0.05,1000,500,1000,-1, cl1);   
+        ContaInvestimento ci1 = new ContaInvestimento(0.05,1000,500,1000,-1, cl1);
         //2
-        ContaInvestimento ci2 = new ContaInvestimento(0.06,2000,600,2000,-1, cl1);            
+        ContaInvestimento ci2 = new ContaInvestimento(0.06,2000,600,2000,-1, cl1);
         //3
-        ContaInvestimento ci3 = new ContaInvestimento(0.07,3000,700,3000,-1, cl1);     
+        ContaInvestimento ci3 = new ContaInvestimento(0.07,3000,700,3000,-1, cl1);
         //4
-        ContaInvestimento ci4 = new ContaInvestimento(0.08,4000,800,4000,-1, cl1);   
-        
+        ContaInvestimento ci4 = new ContaInvestimento(0.08,4000,800,4000,-1, cl1);
+
         //Grava contas no BD
         invDao.add(ci1);
         invDao.add(ci2);
         invDao.add(ci3);
         invDao.add(ci4);
-        
+
         //Recupera todas as contas correntes do BD
         List<ContaCorrente> listaContaCorrente = corDao.getAll();
         //Recupera todas  as contas investimento do BD
@@ -846,42 +856,42 @@ public class TesteBancoRrw{
         assertEquals(4, listaContaCorrente.size());
         //Verifica se temos 4 contas investimento recuperadas
         assertEquals(4, listaContasInvestimento.size());
-       
+
         //Exclui as contas correntes.
         corDao.deleteAll();
         //Recupera novamente as 2 listas (contas correntes e investimentos)
         List<ContaCorrente> listaContaCorrente2 = corDao.getAll();
         List<ContaInvestimento> listaContasInvestimento2 = invDao.getAll();
         //Verifica se temos 0 contas correntes recuperadas
-        assertEquals(0, listaContaCorrente2.size());  
+        assertEquals(0, listaContaCorrente2.size());
         //Verifica se as 4 contas investimento continuam lá
-        assertEquals(4, listaContasInvestimento2.size());          
-        
+        assertEquals(4, listaContasInvestimento2.size());
+
     }
-    
+
     @Test
     public void t42testaSeODeleteAllDaContaInvestimentoNaoEliminaTodasAsContasCorrentesDoCliente() throws Exception {
         inicializaBD();
         //Cria 4 contas correntes (uma para cada cliente)
         //1
         Cliente cl1 = new Cliente(-1,"Marcelo","0886",LocalDate.of(1995,2,3),"111");
-        ContaCorrente co1 = new ContaCorrente(1000,0.05,-1, cl1, 300);   
+        ContaCorrente co1 = new ContaCorrente(1000,0.05,-1, cl1, 300);
         //2
         Cliente cl2 = new Cliente(-1,"Rodrigo","0884",LocalDate.of(1996,4,3),"112");
-        ContaCorrente co2 = new ContaCorrente(500,0.04,-1, cl2, 200);          
+        ContaCorrente co2 = new ContaCorrente(500,0.04,-1, cl2, 200);
         //3
         Cliente cl3 = new Cliente(-1,"Maria","081",LocalDate.of(1997,1,13),"113");
-        ContaCorrente co3 = new ContaCorrente(1500,0.03,-1, cl3, 300);  
+        ContaCorrente co3 = new ContaCorrente(1500,0.03,-1, cl3, 300);
         //4
         Cliente cl4 = new Cliente(-1,"Viviane","089",LocalDate.of(1998,3,23),"114");
         ContaCorrente co4 = new ContaCorrente(3000,0.02,-1, cl4, 400);
-        
+
         //Grava clientes no BD
         cliDao.add(cl1);
         cliDao.add(cl2);
         cliDao.add(cl3);
         cliDao.add(cl4);
-        
+
         //Grava contas corrente no BD
         corDao.add(co1);
         corDao.add(co2);
@@ -890,20 +900,20 @@ public class TesteBancoRrw{
 
 
         //Cria  4 Contas Investimento para o primeiro cliente.
-        ContaInvestimento ci1 = new ContaInvestimento(0.05,1000,500,1000,-1, cl1);   
+        ContaInvestimento ci1 = new ContaInvestimento(0.05,1000,500,1000,-1, cl1);
         //2
-        ContaInvestimento ci2 = new ContaInvestimento(0.06,2000,600,2000,-1, cl1);            
+        ContaInvestimento ci2 = new ContaInvestimento(0.06,2000,600,2000,-1, cl1);
         //3
-        ContaInvestimento ci3 = new ContaInvestimento(0.07,3000,700,3000,-1, cl1);     
+        ContaInvestimento ci3 = new ContaInvestimento(0.07,3000,700,3000,-1, cl1);
         //4
-        ContaInvestimento ci4 = new ContaInvestimento(0.08,4000,800,4000,-1, cl1);   
-        
+        ContaInvestimento ci4 = new ContaInvestimento(0.08,4000,800,4000,-1, cl1);
+
         //Grava contas investimento no BD
         invDao.add(ci1);
         invDao.add(ci2);
         invDao.add(ci3);
         invDao.add(ci4);
-        
+
         //Recupera todas as contas correntes do BD
         List<ContaCorrente> listaContaCorrente = corDao.getAll();
         //Recupera todas  as contas investimento do BD
@@ -912,18 +922,17 @@ public class TesteBancoRrw{
         assertEquals(4, listaContaCorrente.size());
         //Verifica se temos 4 contas investimento recuperadas
         assertEquals(4, listaContasInvestimento.size());
-       
+
         //Exclui as contas investimento.
         invDao.deleteAll();
         //Recupera novamente as 2 listas (contas correntes e investimentos)
         List<ContaCorrente> listaContaCorrente2 = corDao.getAll();
         List<ContaInvestimento> listaContasInvestimento2 = invDao.getAll();
         //Verifica se temos 4 contas correntes recuperadas
-        assertEquals(4, listaContaCorrente2.size());  
+        assertEquals(4, listaContaCorrente2.size());
         //Verifica se as 4 contas investimento foram apagadas
-        assertEquals(0, listaContasInvestimento2.size());          
-        
-    }
+        assertEquals(0, listaContasInvestimento2.size());
 
+    }
 
 }

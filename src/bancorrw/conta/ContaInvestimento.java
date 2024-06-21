@@ -11,6 +11,48 @@ import bancorrw.cliente.Cliente;
  * @author rafae
  */
 public class ContaInvestimento extends Conta{
+    private double taxaRemuneracaoInvestimento;
+    private double montanteMinimo;
+    private double depositoMinimo;
 
-  
+    public ContaInvestimento(double taxaRemuneracaoInvestimento, double montanteMinimo,
+                             double depositoMinimo, double saldo, long id, Cliente cliente) {
+        super(id, cliente, saldo);
+    }
+
+    public double getTaxaRemuneracaoInvestimento() {
+        return taxaRemuneracaoInvestimento;
+    }
+
+    public void setTaxaRemuneracaoInvestimento(double taxaRemuneracaoInvestimento) {
+        this.taxaRemuneracaoInvestimento = taxaRemuneracaoInvestimento;
+    }
+
+    public double getMontanteMinimo() {
+        return montanteMinimo;
+    }
+
+    public void setMontanteMinimo(double montanteMinimo) {
+        this.montanteMinimo = montanteMinimo;
+    }
+
+    public double getDepositoMinimo() {
+        return depositoMinimo;
+    }
+
+    public void setDepositoMinimo(double depositoMinimo) {
+        this.depositoMinimo = depositoMinimo;
+    }
+
+    public void aplicaJuros(){
+
+    }
+
+    public void saca(double valor){
+
+    }
+
+    public void deposita(double valor){
+
+    }
 }

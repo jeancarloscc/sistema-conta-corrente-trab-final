@@ -41,7 +41,7 @@ public abstract class Conta {
         return saldo;
     }
 
-    public void deposito(double valor) {
+    public void deposita(double valor) {
         this.saldo += valor;
     }
 
@@ -53,8 +53,8 @@ public abstract class Conta {
         this.saldo -= valor;
     }
 
-    public void getNumero(){
-        System.out.println(this.id);
+    public long getNumero(){
+        return this.id;
     }
 
 
