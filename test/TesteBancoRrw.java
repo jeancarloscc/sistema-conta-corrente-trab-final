@@ -6,23 +6,17 @@
 import bancorrw.cliente.Cliente;
 import bancorrw.conta.ContaCorrente;
 import bancorrw.conta.ContaInvestimento;
-import bancorrw.dao.ClienteDao;
-import bancorrw.dao.ContaCorrenteDao;
-import bancorrw.dao.ContaInvestimentoDao;
-import bancorrw.dao.DaoFactory;
-import bancorrw.dao.DaoType;
+import bancorrw.dao.*;
+import org.junit.*;
+import org.junit.runners.MethodSorters;
+
 import java.lang.reflect.Modifier;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.FixMethodOrder;
-import org.junit.runners.MethodSorters;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 
 /**

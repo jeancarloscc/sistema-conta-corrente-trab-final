@@ -7,7 +7,6 @@ package bancorrw.conta;
 import bancorrw.cliente.Cliente;
 
 /**
- *
  * @author rafae
  */
 public abstract class Conta {
@@ -41,11 +40,21 @@ public abstract class Conta {
         return saldo;
     }
 
-    public void deposita(double valor) {
-        this.saldo += valor;
+    public void deposita(double valor) throws Exception {
+        if (valor <= 0) {
+            throw new Exception("Valor do depósito não pode ser negativo ou zero. Valor=" + valor);
+        } else {
+            this.saldo += valor;
+        }
     }
 
-    public void sacar(double valor) {
+    public void saca(double valor) {
+        if (valor <= 0) {
+            throw new RuntimeException("Valor do saque não pode ser negativo ou zero. Valor=" + valor);
+        }
+        if (this.saldo < valor) {
+            throw new RuntimeException("Saldo insuficiente para efetuar o saque. Saldo disponível: " + this.saldo);
+        }
         this.saldo -= valor;
     }
 
@@ -53,9 +62,8 @@ public abstract class Conta {
         this.saldo -= valor;
     }
 
-    public long getNumero(){
-        return this.id;
+    public long getNumero() {
+        return id;
     }
-
 
 }

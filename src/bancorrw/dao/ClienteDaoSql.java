@@ -72,32 +72,31 @@ public class ClienteDaoSql implements ClienteDao {
     @Override
     public void add(Cliente cliente) throws Exception {
         try (Connection connection = ConnectionFactory.getConnection();
-             PreparedStatement stmtAdiciona = connection.prepareStatement(insertCliente, Statement.RETURN_GENERATED_KEYS);
-        ) {
+             PreparedStatement stmtAdiciona = connection.prepareStatement(insertCliente, Statement.RETURN_GENERATED_KEYS)) {
             stmtAdiciona.setString(1, cliente.getNome());
             stmtAdiciona.setString(2, cliente.getCpf());
-            stmtAdiciona.setDate(3, Date.valueOf(LocalDate.now()));
+            stmtAdiciona.setDate(3, Date.valueOf(cliente.getDataNascimento()));
             stmtAdiciona.setString(4, cliente.getCartaoCredito());
 
-            stmtAdiciona.execute();
+            stmtAdiciona.executeUpdate();
 
-            ResultSet rs = stmtAdiciona.getGeneratedKeys();
-            rs.next();
-            long idCliente = rs.getLong(1);
-            cliente.setId(idCliente);
+            try (ResultSet rs = stmtAdiciona.getGeneratedKeys()) {
+                if (rs.next()) {
+                    long idCliente = rs.getLong(1);
+                    cliente.setId(idCliente);
+                }
+            }
         }
     }
 
     @Override
     public List<Cliente> getAll() throws Exception {
         try (Connection connection = ConnectionFactory.getConnection();
-             PreparedStatement stmtLista = connection.prepareStatement(selectAll, Statement.RETURN_GENERATED_KEYS);
-             ResultSet rs = stmtLista.executeQuery();
-        ) {
+             PreparedStatement stmtLista = connection.prepareStatement(selectAll);
+             ResultSet rs = stmtLista.executeQuery()) {
+
             List<Cliente> clientes = new ArrayList<>();
             while (rs.next()) {
-                // criando o objeto cliente
-                //Cliente cliente = new Cliente();
                 long idCliente = rs.getLong("id_cliente");
                 String nome = rs.getString("nome");
                 String cpf = rs.getString("cpf");
@@ -115,7 +114,8 @@ public class ClienteDaoSql implements ClienteDao {
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement stmtLista = connection.prepareStatement(selectById)) {
             stmtLista.setLong(1, id);
-            try (ResultSet rs = stmtLista.executeQuery();) {
+
+            try (ResultSet rs = stmtLista.executeQuery()) {
                 if (rs.next()) {
                     String nome = rs.getString("nome");
                     String cpf = rs.getString("cpf");
@@ -132,11 +132,12 @@ public class ClienteDaoSql implements ClienteDao {
     @Override
     public void update(Cliente cliente) throws Exception {
         try (Connection connection = ConnectionFactory.getConnection();
-        PreparedStatement stmtAtualiza = connection.prepareStatement(updateCliente)) {
+             PreparedStatement stmtAtualiza = connection.prepareStatement(updateCliente)) {
             stmtAtualiza.setString(1, cliente.getNome());
             stmtAtualiza.setString(2, cliente.getCpf());
-            stmtAtualiza.setDate(3, Date.valueOf(LocalDate.now()));
+            stmtAtualiza.setDate(3, Date.valueOf(cliente.getDataNascimento()));
             stmtAtualiza.setString(4, cliente.getCartaoCredito());
+            stmtAtualiza.setLong(5, cliente.getId());
             stmtAtualiza.executeUpdate();
         }
     }
@@ -144,7 +145,7 @@ public class ClienteDaoSql implements ClienteDao {
     @Override
     public void delete(Cliente cliente) throws Exception {
         try (Connection connection = ConnectionFactory.getConnection();
-        PreparedStatement stmtDeleta = connection.prepareStatement(deleteById)) {
+             PreparedStatement stmtDeleta = connection.prepareStatement(deleteById)) {
             stmtDeleta.setLong(1, cliente.getId());
             stmtDeleta.executeUpdate();
         }
@@ -153,11 +154,12 @@ public class ClienteDaoSql implements ClienteDao {
     @Override
     public void deleteAll() throws Exception {
         try (Connection connection = ConnectionFactory.getConnection();
-        PreparedStatement stmtDeleta = connection.prepareStatement(deleteAll);
-        PreparedStatement stmtResetAI = connection.prepareStatement(ressetAIPessoas);) {
+             PreparedStatement stmtDeleta = connection.prepareStatement(deleteAll);
+             PreparedStatement stmtResetAI = connection.prepareStatement(ressetAIPessoas);
+             PreparedStatement stmtResetAIContas = connection.prepareStatement(ressetAIContas);) {
             stmtDeleta.executeUpdate();
             stmtResetAI.executeUpdate();
+            stmtResetAIContas.executeUpdate();
         }
     }
-    
 }
