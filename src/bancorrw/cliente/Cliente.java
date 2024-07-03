@@ -29,11 +29,12 @@ public class Cliente extends Pessoa {
     }
 
     public List<ContaInvestimento> getContasInvestimento() {
-//        if (this.contasInvestimento == null) {
-//            return Collections.emptyList();
-//        }
-        return Collections.unmodifiableList(this.contasInvestimento);
+        if (this.contasInvestimento == null || this.contasInvestimento.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(contasInvestimento);
     }
+
 
     public void setContasInvestimento(List<ContaInvestimento> contasInvestimento) {
         this.contasInvestimento = contasInvestimento;
@@ -64,24 +65,26 @@ public class Cliente extends Pessoa {
 
     public double getSaldoTotalCliente() {
         double saldoTotal = 0.0;
-        try {
-            if (contaCorrente != null) {
-                saldoTotal += contaCorrente.getSaldo();
-                // Verifica se contaCorrente não é nula antes de acessar o número
-                if (contaCorrente.getNumero() != 0) {
-                    saldoTotal += contaCorrente.getNumero();
-                }
+
+        // Verifica se contaCorrente não é nula antes de acessar o saldo
+        if (contaCorrente != null) {
+            saldoTotal += contaCorrente.getSaldo();
+            // Verifica se contaCorrente não é nula antes de acessar o número
+            if (contaCorrente.getNumero() != 0) {
+                saldoTotal += contaCorrente.getNumero();
             }
+        }
+
+        // Verifica se contasInvestimento não é nula antes de iterar sobre ela
+        if (contasInvestimento != null) {
             for (ContaInvestimento conta : contasInvestimento) {
                 saldoTotal += conta.getSaldo();
             }
-        } catch (NullPointerException e) {
-            System.out.println("Não pode modificar a conta corrente, pois saldo da original não está zerado. \"\n" +
-                    "                    + \"Para fazer isso primeiro zere o saldo da conta do cliente. Saldo="+getSaldoTotalCliente());
-            saldoTotal = 0.0; // Definindo saldo total como zero em caso de exceção
         }
+
         return saldoTotal;
     }
+
 
     public void addContaInvestimento(ContaInvestimento contaInvestimento) throws Exception {
 //        if (this.getId() <= 0) {

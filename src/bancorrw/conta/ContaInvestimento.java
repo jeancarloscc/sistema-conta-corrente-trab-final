@@ -11,6 +11,9 @@ public class ContaInvestimento extends Conta {
                              double depositoMinimo, double saldo, long id, Cliente cliente) throws Exception {
         super(id, cliente, saldo);
         this.taxaRemuneracaoInvestimento = taxaRemuneracaoInvestimento;
+        if (saldo < montanteMinimo) {
+            throw new Exception("Saldo não pode ser menor que montante mínimo.");
+        }
         this.montanteMinimo = montanteMinimo;
         this.depositoMinimo = depositoMinimo;
     }
@@ -40,32 +43,30 @@ public class ContaInvestimento extends Conta {
         this.depositoMinimo = depositoMinimo;
     }
 
-    public void aplicaJuros() {
-        // Implementação do método para aplicar juros na conta de investimento
-        double juros = getSaldo() * (taxaRemuneracaoInvestimento / 100);
-        try {
-            deposita(juros);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    @Override
+    public void aplicaJuros() throws Exception {
+        if (getSaldo() >= 0){
+            double saldoJuros = (taxaRemuneracaoInvestimento * getSaldo());
+            super.deposita(saldoJuros);
         }
     }
 
     public void saca(double valor) {
         // Implementação do método para sacar da conta de investimento
-        if (valor <= getSaldo()) {
-            try {
-                super.saca(valor);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            System.out.println("Saque não permitido. Saldo insuficiente.");
+        if (valor > getMontanteMinimo()) {
+            throw new RuntimeException("Saldo insuficiente para saque. Valor Saque=" + valor + " Saldo=" + getSaldo() + " Montante Minimo=" + getMontanteMinimo());
         }
+        super.saca(valor);
+
     }
 
-    @Override
     public void deposita(double valor) throws Exception {
-        
-        super.deposita(valor);
+        if (valor >= depositoMinimo && valor <= montanteMinimo) {
+            super.deposita(valor);
+        }
+        if (valor < depositoMinimo) {
+            throw new RuntimeException("Valor do depóstio não atingiu o mínimo. Valor Depósito=" + valor + " Depóstio Mínimo=" + getDepositoMinimo());
+        }
+//        super.deposita(valor);
     }
 }

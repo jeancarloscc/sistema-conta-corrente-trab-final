@@ -30,23 +30,29 @@ public class ContaCorrente extends Conta {
         this.taxaJurosLimite = taxaJuros;
     }
 
-    public void aplicaJuros() {
-        if (getSaldo() < 0) {
-            double juros = getSaldo() * taxaJurosLimite;
-            super.saca(juros); // Aplica juros como um saque no saldo
+    public void aplicaJuros() throws Exception {
+        if (getSaldo() >= 0){
+            return;
+        } else {
+            double saldoJuros = getSaldo() - (taxaJurosLimite * 100);
+            super.saca(saldoJuros);
         }
     }
 
+    @Override
     public void saca(double valor) {
-        if (valor <= 0) {
-            throw new RuntimeException("Valor do saque não pode ser negativo ou zero. Valor="+valor);
+        if (valor < 0 || valor == 0) {
+            throw new RuntimeException("Valor do saque não pode ser negativo ou zero. Valor=" + valor);
         }
-
-        if (getSaldo() < valor) {
-            throw new RuntimeException("Saldo insuficiente na conta."+
-                    "\nValor saque=1300.0"+
-                    "\nSaldo="+getSaldo()+
-                    "\nLimite="+getLimite());
+        if (valor > getSaldo() + this.limite) {
+            throw new RuntimeException("Saldo insuficiente na conta." +
+                    "\nValor saque=" + valor +
+                    "\nSaldo=" + getSaldo() +
+                    "\nLimite=" + getLimite());
+        }
+        super.saca(valor);
+        if (getSaldo() < 0) {
+            this.limite += getSaldo(); // Ajusta o limite utilizado
         }
     }
 

@@ -41,7 +41,7 @@ public abstract class Conta {
     }
 
     public void deposita(double valor) throws Exception {
-        if (valor <= 0) {
+        if (valor < 0 || valor == 0) {
             throw new Exception("Valor do depósito não pode ser negativo ou zero. Valor=" + valor);
         } else {
             this.saldo += valor;
@@ -50,16 +50,18 @@ public abstract class Conta {
 
     public void saca(double valor) {
         if (valor <= 0) {
-            throw new RuntimeException("Valor do saque não pode ser negativo ou zero. Valor=" + valor);
+            this.saldo = valor;
+        } else {
+            this.saldo -= valor;
         }
-        if (this.saldo < valor) {
-            throw new RuntimeException("Saldo insuficiente para efetuar o saque. Saldo disponível: " + this.saldo);
-        }
-        this.saldo -= valor;
+//        if (this.saldo < valor) {
+//            throw new RuntimeException("Saldo insuficiente para efetuar o saque. Saldo disponível: " + this.saldo);
+//        }
+
     }
 
-    public void aplicaJuros(double valor) {
-        this.saldo -= valor;
+    public void aplicaJuros() throws Exception {
+
     }
 
     public long getNumero() {
