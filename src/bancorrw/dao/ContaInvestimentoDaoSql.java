@@ -296,8 +296,7 @@ public class ContaInvestimentoDaoSql implements ContaInvestimentoDao {
                     double montanteMinimo = rs.getDouble("montante_minimo");
                     double depositoMinimo = rs.getDouble("deposito_minimo");
 
-                    ContaInvestimento contaInvestimento = new ContaInvestimento(taxaRemuneracao, montanteMinimo, depositoMinimo, saldo, idConta, cliente);
-                    contasInvestimento.add(contaInvestimento);
+                    contasInvestimento.add(new ContaInvestimento(taxaRemuneracao, montanteMinimo, depositoMinimo, saldo, idConta, cliente));
                 }
                 cliente.setContasInvestimento(contasInvestimento);
                 return contasInvestimento;

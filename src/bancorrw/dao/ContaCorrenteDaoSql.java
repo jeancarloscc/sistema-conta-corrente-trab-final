@@ -203,9 +203,8 @@ public class ContaCorrenteDaoSql implements ContaCorrenteDao {
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement stmtLista = connection.prepareStatement(selectByCliente)) {
             stmtLista.setLong(1, cliente.getId());
-
-            try (ResultSet rs = stmtLista.executeQuery()) {
-                if (rs.next()) {
+            try (ResultSet rs = stmtLista.executeQuery();) {
+                while (rs.next()) {
                     long id = rs.getLong("id_conta");
                     double saldo = rs.getDouble("saldo");
                     double limite = rs.getDouble("limite");

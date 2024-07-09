@@ -48,7 +48,6 @@ public class Cliente extends Pessoa {
         if (this.contaCorrente != null && this.contaCorrente.getSaldo() != 0) {
             throw new Exception("Não pode modificar a conta corrente, pois saldo da original não está zerado. Para fazer isso primeiro zere o saldo da conta do cliente. Saldo=" + this.contaCorrente.getSaldo());
         }
-
         this.contaCorrente = contaCorrente;
         if (this.contaCorrente != null) {
             this.contaCorrente.setCliente(this);
