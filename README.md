@@ -10,23 +10,6 @@ O projeto consiste na implementação das classes necessárias para que todos os
 - Projeto no NetBeans com testes unitários escritos.
 - Script DDL para criação das tabelas do banco de dados no MySQL.
 
-## Casos de Teste
-Os casos de teste estão escritos no JUnit e estão disponíveis no projeto fornecido no Moodle. Existem 42 casos de teste no total. Para atingir a nota máxima, é necessário que 40 casos de teste estejam funcionando simultaneamente. Cada caso de teste verde vale 2,5 pontos.
-
-## Entrega
-O trabalho deve ser entregue no Moodle. Cada aluno deve entregar um arquivo ZIP contendo:
-- O projeto com as classes implementadas.
-- Os casos de testes.
-- Um relatório em PDF com evidências dos testes que funcionaram, coletadas do NetBeans em formato de imagem.
-
-## Preparação do Banco de Dados
-Para preparar o banco de dados, execute os seguintes passos:
-1. Abra o MySQL Command Line.
-2. Faça login com o usuário e senha (root do banco).
-3. Execute o comando: `source <Caminho completo do arquivo>.`
-
-> Observação: O caminho do arquivo não pode conter espaços ou caracteres especiais. Este comando criará a base de dados `bancorrw` com as 4 tabelas necessárias.
-
 ## Estrutura do Projeto
 O projeto é composto pelas seguintes partes:
 - **Classes de Sistema**: Implementação das classes do sistema conforme o diagrama de classes.
